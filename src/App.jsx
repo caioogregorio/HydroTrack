@@ -4,9 +4,25 @@ import './App.css'
 function App() {
   const [consumo, setConsumo] = useState(1200)
   const meta = 2500
+  const [historico, setHistorico] = useState([])
 
   const adicionarAgua = (quantidade) => {
     setConsumo(consumo + quantidade)
+
+    const novaAdicao = {
+      quantidade: quantidade,
+      horario: new Date().toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    }
+
+    setHistorico([novaAdicao, ...historico])
+  }
+
+  const zerarConsumo = () => {
+    setConsumo(0)
+    setHistorico([])
   }
 
   const progresso = Math.min((consumo / meta) * 100, 100)
@@ -70,6 +86,34 @@ function App() {
             <button onClick={() => adicionarAgua(300)}>+ 300 ml</button>
             <button onClick={() => adicionarAgua(500)}>+ 500 ml</button>
           </div>
+
+          <button className="reset-button" onClick={zerarConsumo}>
+            Zerar consumo
+          </button>
+
+        </section>
+
+        <section className="history">
+          <h3>Histórico de hoje</h3>
+
+          {historico.length === 0 ? (
+            <p className="empty-history">
+              Nenhuma água adicionada ainda.
+            </p>
+          ) : (
+            <div className="history-list">
+              {historico.map((item, index) => (
+                <div className="history-item" key={index}>
+                  <div>
+                    <span>💧</span>
+                    <strong>+{item.quantidade} ml</strong>
+                  </div>
+
+                  <span>{item.horario}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="stats">
